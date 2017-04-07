@@ -24,10 +24,10 @@
   :aliases {"prod-build" ^{:doc "Recompile code with prod profile."}
             ["do" "clean"
              ["with-profile" "prod" "cljsbuild" "once"]]
-            "amp-re" ["shell" "sed" "-i" "s/.*amp/;&/" "src/common/views.cljc"]
-            "web-re" ["shell" "sed" "-i" "s/.*rejs/;&/" "src/common/views.cljc"]
-            "app-re" ["shell" "sed" "-i" "s/.*ren/;&/" "src/common/views.cljc"]
-            "res" ["shell" "sed" "-i" "s/^;*//" "src/common/views.cljc"]
+            "amp-re" ["shell" "sed" "-i" "-e" "s/.*amp/;&/" "src/common/views.cljc"]
+            "web-re" ["shell" "sed" "-i" "-e" "s/.*rejs/;&/" "src/common/views.cljc"]
+            "app-re" ["shell" "sed" "-i" "-e" "s/.*ren/;&/" "src/common/views.cljc"]
+            "res" ["shell" "sed" "-i" "-e" "s/^;*//" "src/common/views.cljc"]
             "web" ["do" "res"
                    ["do" "amp-re" ["do" "app-re"]]]
             "app" ["do" "res"
