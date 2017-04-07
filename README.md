@@ -9,7 +9,7 @@ You can follow [this] tutorial to see a clean install of all the components need
 Install node dependencies with:
 
 ```
-$ node install
+$ npm install
 ```
 
 Download lein dependencies with:
@@ -40,7 +40,7 @@ Run it as:
 $ lein figwheel web
 ```
 
-## AMP modw
+## AMP mode
 
 Run it as:
 
