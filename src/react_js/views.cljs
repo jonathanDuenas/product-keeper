@@ -131,7 +131,8 @@
 (defn root
   [elem]
   (let [inst (:this elem)]
-  (apply
+    (print elem)
+    (apply
    dom/div #js {:id "container"}
    [
     (modal-window {:c inst :mode :web})

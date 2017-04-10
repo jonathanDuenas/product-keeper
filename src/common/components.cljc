@@ -2,17 +2,6 @@
   (:require [om.next :as om :refer-macros [defui]]
             [common.views :as view]
             ))
-;; Raven-js/sentry
-
-
-
-;;- test raven
-
-;(def test-type (js/Test.))
-;(def e (.-name test-type))
-
-;; --
-
 
 (om/defui Product
   static om/Ident
@@ -56,11 +45,15 @@
 (om/defui RootView
   static om/IQueryParams
   (params [this]
-          {:root/name nil})
+          {:root/name nil
+           :root/id 0
+           })
   static om/IQuery
   (query [this]
          (let [subquery (om/get-query Product)]
-           `[(:product/id {:query ~subquery :name ?root/name})]))
+           `[(:product/id {:query ~subquery :name ?root/name})]
+           `[(:test/id {:id ?root/id})]
+           ))
   Object
   (render [this]
           (let [{:keys [product/id]} (om/props this)]
