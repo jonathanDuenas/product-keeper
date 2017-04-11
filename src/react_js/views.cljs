@@ -131,7 +131,6 @@
 (defn root
   [elem]
   (let [inst (:this elem)]
-    (print elem)
     (apply
    dom/div #js {:id "container"}
    [
@@ -161,6 +160,37 @@
                        (om/get-state inst :click))
             :className "btn" :id "addBtn"}
        "+ Product Keeper")
-      (:body elem)]
+      (:body elem)
+      
+      ;; -- Contextual debugging 
+
+      (let [lis (get (first (:test/id (om/props inst))) 0)
+            id (:root/id (om.next/get-params inst))
+            ]
+        (dom/a
+         #js {:onClick
+              (if (not= nil lis)
+                (do
+                  (def foward (str "Make transact " (first lis) " id " id ))
+                  (fn [e]
+                    (om/transact! inst
+                                  `[(~(first lis) ~(second lis))])
+                    (om/set-query! inst {:params {:root/name (:root/name (om/get-params inst))
+                                                  :root/id (+ id 2)}})
+                    )
+                  )
+                (do
+                  (def foward "No more transactions")
+                  nil
+                  )
+              )
+              :className "btn" :id "addBtn"}
+         foward
+         )
+        )
+      
+      ;; -- End contextual
+      
+      ]
      )]))
   )

@@ -46,13 +46,14 @@
   static om/IQueryParams
   (params [this]
           {:root/name nil
-           :root/id 0
+           :root/id 536870913
            })
   static om/IQuery
   (query [this]
          (let [subquery (om/get-query Product)]
-           `[(:product/id {:query ~subquery :name ?root/name})]
-           `[(:test/id {:id ?root/id})]
+           `[(:product/id {:query ~subquery :name ?root/name})
+             (:test/id {:id ?root/id})
+             ]
            ))
   Object
   (render [this]

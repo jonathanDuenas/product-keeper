@@ -17,11 +17,13 @@
       (do
         (om/update-state! c assoc :SS (fn [e] (om/update-state! c assoc :search-text "") (searchF c) ))
         (om/update-state! c assoc :SText "X")
-        (om/set-query! c {:params {:root/name (om/get-state c :search-text)}}))
+        (om/set-query! c {:params {:root/name (om/get-state c :search-text)
+                                   :root/id (:root/id (om/get-params c))}}))
       (do
         (om/update-state! c assoc :SS (fn [e] (searchF c)))
         (om/update-state! c assoc :SText "SS")
-        (om/set-query! c {:params {:root/name nil}}))
+        (om/set-query! c {:params {:root/name nil
+                                   :root/id (:root/id (om/get-params c))}}))
       ))
   )
 

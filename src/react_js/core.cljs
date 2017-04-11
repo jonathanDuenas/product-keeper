@@ -16,27 +16,18 @@
   (om/reconciler
    {:state db/conn
     :shared {:mode :web}
-    :tx-listen (fn [tx-data tx]
-                 (let [key (get (first (:ret tx)) 0)
-                       val (get (first (:ret tx)) 1)
-                       transaction (get (:tx tx) 0)
-                       id (:db/current-tx (:tempids (:result val)))
-                       ]
-                   (cljs.pprint/pprint id)
-                   (def ob {:db/id id :transaction transaction :prev (- id 2)})
-                   (d/transact! db/conn [ob])
-                   (cljs.pprint/pprint db/conn)
-                   )
-                 )
+;;     :tx-listen (fn [tx-data tx]
+;;                  (let [key (get (first (:ret tx)) 0)
+;;                        val (get (first (:ret tx)) 1)
+;;                        transaction (get (:tx tx) 0)
+;;                        id (:db/current-tx (:tempids (:result val)))
+;;                        ]
+;; ;                   (cljs.pprint/pprint id)
+;; ;                   (def ob {:db/id id :transaction transaction :prev (- id 2)})
+;; ;                   (d/transact! db/conn [ob])
+;; ;                   (cljs.pprint/pprint db/conn)
+;;                    )
+;;                  )
     :parser (om/parser {:read db/read :mutate db/mutate})}))
 
 (om/add-root! reconciler cmp/RootView (gdom/getElement "app"))
-
-;; (add-watch (om.next/app-state reconciler) :tx
-;;            (fn [_ atom old new ]
-;;              (print "atom " atom)
-;;              (print "old " old)
-;;              (print "new " new)
-;;              )
-;;            )
-

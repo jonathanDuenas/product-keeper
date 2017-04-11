@@ -46,13 +46,15 @@
 
 (defmethod mutate 'product/add
   [{:keys [state]} _ param]
-  (print "state " state)
   {:value {:keys [_]}
    :action (fn [] (d/transact! state [param]))})
 
 (defmethod mutate 'test/add
   [{:keys [state]} _ param]
-  (print "test-state " state)
   {:value {:keys [_]}
    :action (fn [] (d/transact! state [param]))})
 
+(defmethod mutate 'test/remove
+  [{:keys [state]} _ param]
+  {:value {:keys [_]}
+   :action (fn [] (d/transact! state [param]))})
