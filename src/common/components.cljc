@@ -46,7 +46,7 @@
   static om/IQueryParams
   (params [this]
           {:root/name nil
-           :root/id 536870913
+           :root/id 1
            })
   static om/IQuery
   (query [this]

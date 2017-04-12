@@ -6,14 +6,25 @@
 (def conn (d/create-conn {}))
 
 (def testContextual
-  [{:db/id 536870913
-    :prev 536870911
-    :transaction `(product/add {:db/id 1491851474691, :pro/name "firstName", :pro/category "firstCat", :pro/brand "firstBrand", :pro/height "firstHeig", :pro/width "firstWid", :pro/notes "firstNot"})
+  [{:db/id 1
+    :transaction `(product/add {:db/id 149185147001, :pro/name "firstName", :pro/category "firstCat", :pro/brand "firstBrand", :pro/height "firstHeig", :pro/width "firstWid", :pro/notes "firstNot"})
     }
-   {:db/id 536870915
-    :prev 536870913
-    :transaction `(product/add {:db/id 1491851474891, :pro/name "secondName", :pro/category "secondCat", :pro/brand "secondBrand", :pro/height "secondHeig", :pro/width "secondWid", :pro/notes "secondNot"})
-    }]
+   {:db/id 2
+    :transaction `(product/add {:db/id 1491851474002, :pro/name "secondName", :pro/category "secondCat", :pro/brand "secondBrand", :pro/height "secondHeig", :pro/width "secondWid", :pro/notes "secondNot"})
+    }
+   {:db/id 3
+    :transaction `(product/add {:db/id 1491851475003, :pro/name "thirdName", :pro/category "thirdCat", :pro/brand "thirdBrand", :pro/height "thirdHeig", :pro/width "thirdWid", :pro/notes "thirdNot"})
+    }
+   {:db/id 4
+    :transaction `(product/add {:db/id 1491851475004, :pro/name "fourthName", :pro/category "fourthCat", :pro/brand "fourthBrand", :pro/height "fourthHeig", :pro/width "fourthWid", :pro/notes "fourthNot"})
+    }
+   {:db/id 5
+    :transaction `(product/add {:db/id 1491851475005, :pro/name "fifthName", :pro/category "fifthCat", :pro/brand "fifthBrand", :pro/height "fifthHeig", :pro/width "fifthWid", :pro/notes "fifthNot"})
+    }
+   {:db/id 6
+    :transaction `(product/add {:db/id 1491851475006, :pro/name "sixthName", :pro/category "sixthCat", :pro/brand "sixthBrand", :pro/height "sixthHeig", :pro/width "sixthWid", :pro/notes "sixthNot"})
+    }
+   ]
   )
 
 (d/transact! conn testContextual)
@@ -55,6 +66,7 @@
    :action (fn [] (d/transact! state [param]))})
 
 (defmethod mutate 'test/remove
-  [{:keys [state]} _ param]
+  [{:keys [state]} _ {:keys [id]}]
   {:value {:keys [_]}
-   :action (fn [] (d/transact! state [param]))})
+   :action (fn [] (d/transact! state [[:db.fn/retractEntity id]]))})
+

@@ -156,39 +156,30 @@
       (dom/a
        #js {:href (om/get-state inst :ref)
             :onClick (if (= (om/get-state inst :click) "")
-                       (fn [e] (om/update-state! inst assoc :search-text "") (fn/searchF inst))
+                       (fn [e] (om/update-state! inst assoc :search-text "") (fn/searchF inst) (om/update-state! inst assoc :modal true))
                        (om/get-state inst :click))
             :className "btn" :id "addBtn"}
        "+ Product Keeper")
       (:body elem)
-      
-      ;; -- Contextual debugging 
 
-      (let [lis (get (first (:test/id (om/props inst))) 0)
-            id (:root/id (om.next/get-params inst))
-            ]
-        (dom/a
-         #js {:onClick
-              (if (not= nil lis)
-                (do
-                  (def foward (str "Make transact " (first lis) " id " id ))
-                  (fn [e]
-                    (om/transact! inst
-                                  `[(~(first lis) ~(second lis))])
-                    (om/set-query! inst {:params {:root/name (:root/name (om/get-params inst))
-                                                  :root/id (+ id 2)}})
-                    )
-                  )
-                (do
-                  (def foward "No more transactions")
-                  nil
-                  )
-              )
-              :className "btn" :id "addBtn"}
-         foward
-         )
-        )
-      
+      ;; -- Contextual debugging 
+      (let [cxt (get (first (:test/id (om/props inst))) 0)
+            id (:root/id (om.next/get-params inst))]
+        
+        (let [parms (mapcat (fn [x] (clojure.string/split x #"\=")) (clojure.string/split (get (clojure.string/split (.-location js/document) #"\?") 1) #"\&"))
+              [k1 v1 k2 v2] parms]
+          (if (and (= v1 "true") (not= cxt nil) (<= id (int v2)) (not= (om/get-state inst :prev) true))
+            ((fn/foward inst cxt id))
+            (om/update-state! inst assoc :prev true)
+            ))
+        (dom/div
+         nil [(dom/a
+               #js {:onClick (fn/foward inst cxt id) :className "btn" :id "addBtn" :title (str (first cxt) " " id)}
+               ">")
+              (dom/a
+               #js {:onClick (fn/backward inst cxt id) :className "btn" :id "addBtn" :title (om/get-state inst :prev)}
+               "<")]))
+             
       ;; -- End contextual
       
       ]

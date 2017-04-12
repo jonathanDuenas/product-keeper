@@ -20,11 +20,11 @@
 ;;                  (let [key (get (first (:ret tx)) 0)
 ;;                        val (get (first (:ret tx)) 1)
 ;;                        transaction (get (:tx tx) 0)
-;;                        id (:db/current-tx (:tempids (:result val)))
+;;                        id nil
 ;;                        ]
 ;; ;                   (cljs.pprint/pprint id)
-;; ;                   (def ob {:db/id id :transaction transaction :prev (- id 2)})
-;; ;                   (d/transact! db/conn [ob])
+;;                    (def ob {:db/id id :transaction transaction})
+;;                    (d/transact! db/conn [ob])
 ;; ;                   (cljs.pprint/pprint db/conn)
 ;;                    )
 ;;                  )
