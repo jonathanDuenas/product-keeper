@@ -46,13 +46,14 @@
   static om/IQueryParams
   (params [this]
           {:root/name nil
-           :root/id 1
+           :root/id 0
            })
   static om/IQuery
   (query [this]
          (let [subquery (om/get-query Product)]
            `[(:product/id {:query ~subquery :name ?root/name})
-             (:test/id {:id ?root/id})
+             (:app/state {:query ~[:db/id :app/modal]})
+             (:test/id {:id ?root/id})             
              ]
            ))
   Object

@@ -48,7 +48,8 @@
    [:#notesTh {:width "28%"}]
    [:#searchBtn :#addBtn :#searchIn{:margin-top "2%"
                            :margin-bottom "2%"
-                           }]
+                                    }]
+   [:#contextual {:z-index "99 !important"}]
    ])
 
 (goog.style/installStyles (g/css style))

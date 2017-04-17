@@ -1,18 +1,31 @@
 (defproject product-keeper "0.1.0-SNAPSHOT"
-            :description "FIXME: write description"
-            :url "http://example.com/FIXME"
-            :license {:name "Eclipse Public License"
+  :description "FIXME: write description"
+  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
                       :url  "http://www.eclipse.org/legal/epl-v10.html"}
-            :dependencies [[org.clojure/clojure "1.9.0-alpha10"]
-                           [org.clojure/clojurescript "1.9.229"
-                            :exclusions [org.clojure/clojure]]
-                           [ring "1.5.0"]
-                           [compojure "1.5.1"]
-                           [cljsjs/react-dom "15.3.1-0"]
-                           [cljsjs/react-dom-server "15.3.1-0"]
-                           [datascript "0.13.1"]
-                           [cljsjs/raven "3.9.1-0"]
-                           [org.omcljs/om "1.0.0-alpha48"]]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha10"]
+                 [org.clojure/clojurescript "1.9.229"
+                  :exclusions [org.clojure/clojure]]
+                 [ring "1.5.0"]
+                 [compojure "1.5.1"]
+                 [cljsjs/react-dom "15.3.1-0"]
+                 [cljsjs/react-dom-server "15.3.1-0"]
+                 [datascript "0.13.1"]
+                 [cljsjs/raven "3.9.1-0"]
+                 [org.omcljs/om "1.0.0-alpha48"]
+
+                 ;; DatSync
+                 [datsync "0.0.1-alpha2-SNAPSHOT" :exclusions [com.datomic/datomic-free
+                                                               com.taoensso/sente
+                                                               com.taoensso/encore]]
+                 ;; Sente WS
+                 [com.taoensso/sente "1.11.0" :exclusions [org.slf4j/slf4j-nop]]
+                 [com.taoensso/encore "2.90.1"] ; Stable
+
+                 ;; Mount
+                 [mount "0.1.11"]
+
+                 ]
   :plugins [[lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]
             [lein-figwheel "0.5.9"]
             [lein-shell "0.5.0"]
@@ -24,10 +37,10 @@
   :aliases {"prod-build" ^{:doc "Recompile code with prod profile."}
             ["do" "clean"
              ["with-profile" "prod" "cljsbuild" "once"]]
-            "amp-re" ["shell" "sed" "-i" "-e" "s/.*amp/;&/" "src/common/views.cljc"]
-            "web-re" ["shell" "sed" "-i" "-e" "s/.*rejs/;&/" "src/common/views.cljc"]
-            "app-re" ["shell" "sed" "-i" "-e" "s/.*ren/;&/" "src/common/views.cljc"]
-            "res" ["shell" "sed" "-i" "-e" "s/^;*//" "src/common/views.cljc"]
+            "amp-re" ["shell" "sed" "-i" "-e" "s/.*amp/;&/" "src/common/views.cljs"]
+            "web-re" ["shell" "sed" "-i" "-e" "s/.*rejs/;&/" "src/common/views.cljs"]
+            "app-re" ["shell" "sed" "-i" "-e" "s/.*ren/;&/" "src/common/views.cljs"]
+            "res" ["shell" "sed" "-i" "-e" "s/^;*//" "src/common/views.cljs"]
             "web" ["do" "res"
                    ["do" "amp-re" ["do" "app-re"]]]
             "app" ["do" "res"

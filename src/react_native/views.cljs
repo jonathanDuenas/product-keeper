@@ -1,5 +1,6 @@
 (ns react-native.views
   (:require [om.next :as om :refer-macros [defui]]
+            [app.ws :as ws]
             [common.functions :as fn]
             [react-native.android.style :refer [style]]
             [react-native.components :refer [app-registry
@@ -163,6 +164,7 @@
         :onPress #(om/update-state! (:this elem) assoc :modal true)}
        (text {:style (:btext style)} "+ Product")                   
        )
+      (text {:style {:fontSize 16 :color "black"}} (str (om/props (:this elem))))
       (:body elem)
       )
      )

@@ -3,6 +3,7 @@
             [react-native.re-natal.support :as sup]
             [common.db :as db]
             [common.components :as cmp]
+            [app.ws :as ws]
             [react-native.components :refer [app-registry]]
             ))
 
@@ -11,10 +12,13 @@
 
 (defonce RootNode (sup/root-node! 1))
 (defonce app-root (om/factory RootNode))
+(ws/startSente "/chsk" "localhost:8082")
+(enable-console-print!)
+(print "PRUEBA")
 
 (def reconciler
   (om/reconciler
-   {:state db/conn
+   {:state ws/conn
     :shared {:mode :app}
     :parser (om/parser {:read db/read :mutate db/mutate})
     :root-render  sup/root-render

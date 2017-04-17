@@ -47,12 +47,15 @@
 
 (defn modal-window
   [elem]
-  (let [{:keys [c]} elem]
+  (let [{:keys [c]} elem {:keys [db/id app/modal] :as states} (get (:app/state (om/props c)) 0)]
   (apply dom/div #js {:id "openModal" :className "modalDialog"}
          [(apply dom/div #js {:id "divBorder"}
                  [(apply dom/div #js {:id "modalHead"}
                          [(dom/label #js {:id "modalTittle"} "Product Keeper")
-                          (dom/a #js {:href "#close" :onClick (fn [] (om/update-state! c assoc :modal false)) :id "closeModal"} "x")])
+                          (dom/a #js {:onClick (fn []
+                                                 (om/transact!
+                                                  c `[(product/add ~(conj states {:app/modal false}))]))
+                                      :id "closeModal"} "x")])
                   (dom/div #js {:id "modalHeadF"} nil)
                   (apply dom/div #js {:id "grid"}
                          [
@@ -130,11 +133,18 @@
 
 (defn root
   [elem]
-  (let [inst (:this elem)]
+  (let [inst (:this elem) {:keys [db/id app/modal] :as states} (get (:app/state (om/props inst)) 0)]
     (apply
-   dom/div #js {:id "container"}
+     dom/div #js {:id "container"}
    [
     (modal-window {:c inst :mode :web})
+
+    (if modal
+      ((fn [] (set! (.-href (.-location js/window)) "#openModal") nil))
+      ((fn [] (set! (.-href (.-location js/window)) "#") nil))
+    )
+
+    ;(print "props in root " (om/props inst))
     (if (and (= (count (:product/id (om/props inst))) 7) (not= (om/get-state inst :ref) "#"))
       (do
         (om/update-state!
@@ -154,32 +164,42 @@
       (search-input {:c inst :p :search-text :mode :web})
       (search-button {:c inst :mode :web})
       (dom/a
-       #js {:href (om/get-state inst :ref)
+       #js {
             :onClick (if (= (om/get-state inst :click) "")
-                       (fn [e] (om/update-state! inst assoc :search-text "") (fn/searchF inst) (om/update-state! inst assoc :modal true))
+                       (fn [e] (om/update-state! inst assoc :search-text "")
+                         (fn/searchF inst)
+                         (if (= modal nil)
+                           (om/transact! inst `[(product/add ~{:db/id -1 :app/modal true})])
+                           (om/transact! inst `[(product/add ~(conj states {:app/modal true}))])
+                           )
+                         )
                        (om/get-state inst :click))
             :className "btn" :id "addBtn"}
        "+ Product Keeper")
       (:body elem)
 
+      
+
       ;; -- Contextual debugging 
-      (let [cxt (get (first (:test/id (om/props inst))) 0)
-            id (:root/id (om.next/get-params inst))]
-        
-        (let [parms (mapcat (fn [x] (clojure.string/split x #"\=")) (clojure.string/split (get (clojure.string/split (.-location js/document) #"\?") 1) #"\&"))
-              [k1 v1 k2 v2] parms]
-          (if (and (= v1 "true") (not= cxt nil) (<= id (int v2)) (not= (om/get-state inst :prev) true))
-            ((fn/foward inst cxt id))
-            (om/update-state! inst assoc :prev true)
-            ))
-        (dom/div
-         nil [(dom/a
-               #js {:onClick (fn/foward inst cxt id) :className "btn" :id "addBtn" :title (str (first cxt) " " id)}
-               ">")
-              (dom/a
-               #js {:onClick (fn/backward inst cxt id) :className "btn" :id "addBtn" :title (om/get-state inst :prev)}
-               "<")]))
-             
+      (if (not= nil (:test/id (om/props inst)))
+        (let [cxt  (cljs.reader/read-string (:test/id (om/props inst)))
+              id (:root/id (om.next/get-params inst))]
+          (let [parms (mapcat (fn [x] (clojure.string/split x #"\=")) (clojure.string/split (get (clojure.string/split (.-location js/document) #"\?") 1) #"\&"))
+                [k1 v1 k2 v2aux] parms v2 (get (clojure.string/split v2aux "#") 0)]
+            (print "se hizo el " id " con " cxt " int " v2 )
+            (if (and (= v1 "true") (not= cxt nil) (<= id (int v2)))
+              ((fn/foward inst cxt id))
+              nil
+              ))
+          (dom/div
+           #js {:id "contextual"} [(dom/a
+                 #js {:onClick (fn/foward inst cxt id) :className "btn" :id "addBtn" :title (str (first cxt) " " id)}
+                 ">")
+                (dom/a
+                 #js {:onClick (fn/backward inst cxt id) :className "btn" :id "addBtn" :title (om/get-state inst :prev)}
+                 "<")]))
+        nil)
+      
       ;; -- End contextual
       
       ]
