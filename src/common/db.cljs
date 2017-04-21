@@ -5,30 +5,6 @@
 
 (def conn (d/create-conn {}))
 
-;; (def testContextual
-;;   [{:db/id 1
-;;     :transaction `(product/add {:db/id 149185147001, :pro/name "firstName", :pro/category "firstCat", :pro/brand "firstBrand", :pro/height "firstHeig", :pro/width "firstWid", :pro/notes "firstNot"})
-;;     }
-;;    {:db/id 2
-;;     :transaction `(product/add {:db/id 1491851474002, :pro/name "secondName", :pro/category "secondCat", :pro/brand "secondBrand", :pro/height "secondHeig", :pro/width "secondWid", :pro/notes "secondNot"})
-;;     }
-;;    {:db/id 3
-;;     :transaction `(product/add {:db/id 1491851475003, :pro/name "thirdName", :pro/category "thirdCat", :pro/brand "thirdBrand", :pro/height "thirdHeig", :pro/width "thirdWid", :pro/notes "thirdNot"})
-;;     }
-;;    {:db/id 4
-;;     :transaction `(product/add {:db/id 1491851475004, :pro/name "fourthName", :pro/category "fourthCat", :pro/brand "fourthBrand", :pro/height "fourthHeig", :pro/width "fourthWid", :pro/notes "fourthNot"})
-;;     }
-;;    {:db/id 5
-;;     :transaction `(product/add {:db/id 1491851475005, :pro/name "fifthName", :pro/category "fifthCat", :pro/brand "fifthBrand", :pro/height "fifthHeig", :pro/width "fifthWid", :pro/notes "fifthNot"})
-;;     }
-;;    {:db/id 6
-;;     :transaction `(product/add {:db/id 1491851475006, :pro/name "sixthName", :pro/category "sixthCat", :pro/brand "sixthBrand", :pro/height "sixthHeig", :pro/width "sixthWid", :pro/notes "sixthNot"})
-;;     }
-;;    ]
-;;   )
-
-;;(d/transact! conn testContextual)
-
 (defmulti read om/dispatch)
 
 (defmethod read :product/id
@@ -47,9 +23,9 @@
 
 (defmethod read :test/id
   [{:keys [state]} _ {:keys [id]}]
-  {:value (get-in (into [] (d/q '[:find ?e ?doc
+  {:value (get-in (into [] (->> (d/q '[:find ?e ?doc
                                   :where [?e :support/transaction ?doc]]
-                                (d/db state)))  [id 1])}
+                                (d/db state)) (sort-by first)))  [id 1])}
   )
 
 (defmethod read :app/state

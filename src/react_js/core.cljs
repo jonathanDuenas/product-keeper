@@ -19,26 +19,23 @@
    {:state ws/conn
     :shared {:mode :web}
     ;; :tx-listen (fn [_ _]
-    ;;              (ws/send-tx! [[:db.fn/retractEntity 17592186045443]])
+    ;;              (doseq [n (map (fn [n] (+ n 17592186045420)) (into [] (range 0 24 2)))]
+    ;;                (ws/send-tx! [[:db.fn/retractEntity n]])
+    ;;                )
     ;;              )
-;;     :tx-listen (fn [tx-data tx]
-;;                  (let [key (get (first (:ret tx)) 0)
-;;                        val (get (first (:ret tx)) 1)
-;;                        transaction (get (:tx tx) 0)
-;;                        id nil
-;;                        ]                   
-;; ;                   (cljs.pprint/pprint id)
-;;                    (def ob {:db/id -1 :support/transaction (str transaction)})
-;;                    (print "Objeto " ob)
-;;                    (ws/send-tx!  [ob])
-;; ;                   (d/transact! db/conn [ob])
-;; ;                   (cljs.pprint/pprint db/conn)
-;;                    )
-;;                 )
+    :tx-listen (fn [tx-data tx]
+                 (let [key (get (first (:ret tx)) 0)
+                       val (get (first (:ret tx)) 1)
+                       transaction (get (:tx tx) 0)
+                       id nil
+                       ]                   
+                   (def ob {:db/id -1 :support/transaction (str transaction)})
+                   (ws/send-tx!  [ob])
+                   )
+                )
     :parser (om/parser {:read db/read :mutate db/mutate})}))
 
 
 (om/add-root! reconciler cmp/RootView (gdom/getElement "app"))
-
 
 

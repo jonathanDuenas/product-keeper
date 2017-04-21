@@ -12,7 +12,7 @@
 
 (defonce RootNode (sup/root-node! 1))
 (defonce app-root (om/factory RootNode))
-(ws/startSente "/chsk" "localhost:8082")
+(ws/startSente "/chsk" "192.168.0.11:8082")
 (enable-console-print!)
 (print "PRUEBA")
 

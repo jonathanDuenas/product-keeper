@@ -3,6 +3,7 @@
             [om.dom :as dom]
             [common.functions :as fn]
             [react-js.styles]
+            [ctx.react-js :as ctx]
             ))
 
 ;;
@@ -94,7 +95,12 @@
                                                                      (js/alert "Cannot add a Product without a name")
                                                                      (fn/clean-form c)
                                                                      )
-                                                                   (fn/add c (fn/get-obj c)))
+                                                                   (do
+                                                                     (fn/add c (fn/get-obj c))
+                                                                     (om/transact!
+                                                                      c `[(product/add ~(conj states {:app/modal false}))])
+                                                                     )
+                                                                   )
                                                                  )} "Save")])])
                           ])
                   ])
@@ -169,7 +175,7 @@
                        (fn [e] (om/update-state! inst assoc :search-text "")
                          (fn/searchF inst)
                          (if (= modal nil)
-                           (om/transact! inst `[(product/add ~{:db/id -1 :app/modal true})])
+                           (om/transact! inst `[(product/add ~{:db/id (.getTime (js/Date.)) :app/modal true})])
                            (om/transact! inst `[(product/add ~(conj states {:app/modal true}))])
                            )
                          )
@@ -177,31 +183,7 @@
             :className "btn" :id "addBtn"}
        "+ Product Keeper")
       (:body elem)
-
-      
-
-      ;; -- Contextual debugging 
-      (if (not= nil (:test/id (om/props inst)))
-        (let [cxt  (cljs.reader/read-string (:test/id (om/props inst)))
-              id (:root/id (om.next/get-params inst))]
-          (let [parms (mapcat (fn [x] (clojure.string/split x #"\=")) (clojure.string/split (get (clojure.string/split (.-location js/document) #"\?") 1) #"\&"))
-                [k1 v1 k2 v2aux] parms v2 (get (clojure.string/split v2aux "#") 0)]
-            (print "se hizo el " id " con " cxt " int " v2 )
-            (if (and (= v1 "true") (not= cxt nil) (<= id (int v2)))
-              ((fn/foward inst cxt id))
-              nil
-              ))
-          (dom/div
-           #js {:id "contextual"} [(dom/a
-                 #js {:onClick (fn/foward inst cxt id) :className "btn" :id "addBtn" :title (str (first cxt) " " id)}
-                 ">")
-                (dom/a
-                 #js {:onClick (fn/backward inst cxt id) :className "btn" :id "addBtn" :title (om/get-state inst :prev)}
-                 "<")]))
-        nil)
-      
-      ;; -- End contextual
-      
+      (ctx/controller inst)
       ]
      )]))
   )

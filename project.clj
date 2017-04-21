@@ -54,7 +54,7 @@
                                   [garden "1.3.2"]]
                    :source-paths ["src" "env/dev" "dev"]
                    :cljsbuild    {:builds [{:id "web"
-                                            :source-paths ["src/react_js" "src/common" "dev"]
+                                            :source-paths ["src/react_js" "src/common" "dev" "src/ctx"]
                                             :figwheel {:on-jsload "react_js.core/on-js-reload"
                                                        :open-urls ["http://localhost:3449/index.html"]
                                                        }
