@@ -66,14 +66,14 @@
                                                        :preloads [devtools.preload]
                                                        }}
                                             {:id "ios"
-                                            :source-paths ["src/react_native" "src/common" "env/dev"]
+                                            :source-paths ["src/react_native" "src/common" "env/dev" "src/ctx"]
                                             :figwheel true
                                             :compiler {:output-to "target/ios/not-used.js"
                                                        :main "env.ios.main"
                                                        :output-dir "target/ios"
                                                        :optimizations :none}}
                                            {:id "android"
-                                            :source-paths ["src/react_native" "src/common" "env/dev"]
+                                            :source-paths ["src/react_native" "src/common" "env/dev" "src/ctx"]
                                             :figwheel true
                                             :compiler {:output-to "target/android/not-used.js"
                                                        :main "env.android.main"

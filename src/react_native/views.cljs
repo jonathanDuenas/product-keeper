@@ -1,6 +1,7 @@
 (ns react-native.views
   (:require [om.next :as om :refer-macros [defui]]
             [app.ws :as ws]
+            [ctx.react-native :as ctx]
             [common.functions :as fn]
             [react-native.android.style :refer [style]]
             [react-native.components :refer [app-registry
@@ -22,7 +23,6 @@
   (om/update-state! c assoc
                     p e))
 
-
 (defn get-box
   [elem]
   (let [{:keys [c name p]} elem]  
@@ -40,8 +40,6 @@
           :value (om/get-state c p)
           }
          ))))
-
-
 
 (defn search-input
   [elem]
@@ -77,13 +75,13 @@
 
 (defn modal-window
   [elem]
-  (let [{:keys [c]} elem]
-  
+  (let [{:keys [c states]} elem]
+    
   (modal
    {:animationType "slide"
     :transparent false
-    :visible (om/get-state c :modal)
-    :onRequestClose #(om/update-state! c assoc :modal false)
+    :visible (:app/modal states)
+    :onRequestClose #(om/transact! c `[(product/add ~(conj states {:app/modal false}))])
     :style (:modal style)
     }
    (scroll-view
@@ -111,7 +109,7 @@
 
      (touchable-highlight
       {:style (:button style)
-       :onPress #(om/update-state! c assoc :modal false)
+       :onPress #(om/transact! c `[(product/add ~(conj states {:app/modal false}))])
        }
       (text {:style (:btext style)} "Cancel")
       )
@@ -146,9 +144,10 @@
 
 (defn root
   [elem]
-  (scroll-view
+  (let [inst (:this elem) {:keys [db/id app/modal] :as states} (get (:app/state (om/props inst)) 0)]
+    (scroll-view
      {:style (:container style)}
-     (modal-window {:c (:this elem) :mode :app})
+     (modal-window {:c (:this elem) :states states :mode :app})
      (view 
       {:style (:header style)}
       (text {:style {:fontSize 16 :color "white"}} "Product Keeper")
@@ -161,11 +160,14 @@
             )
       (touchable-highlight
        {:style (:button style)
-        :onPress #(om/update-state! (:this elem) assoc :modal true)}
+        :onPress #(if (= modal nil)
+                           (om/transact! inst `[(product/add ~{:db/id (.getTime (js/Date.)) :app/modal true})])
+                           (om/transact! inst `[(product/add ~(conj states {:app/modal true}))])
+                           )
+        }
        (text {:style (:btext style)} "+ Product")                   
        )
-      (text {:style {:fontSize 16 :color "black"}} (str (om/props (:this elem))))
+      (text {:style {:fontSize 16 :color "black"}} modal)
       (:body elem)
-      )
-     )
-    )
+      (ctx/controller inst)
+      ))))

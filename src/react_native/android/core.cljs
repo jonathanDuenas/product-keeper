@@ -12,9 +12,8 @@
 
 (defonce RootNode (sup/root-node! 1))
 (defonce app-root (om/factory RootNode))
-(ws/startSente "/chsk" "192.168.0.11:8082")
+(ws/startSente "/chsk" "192.168.0.16:8082")
 (enable-console-print!)
-(print "PRUEBA")
 
 (def reconciler
   (om/reconciler
@@ -24,7 +23,6 @@
     :root-render  sup/root-render
     :root-unmount sup/root-unmount
     }))
-
 
 (defn init []
   (om/add-root! reconciler cmp/RootView 1)
